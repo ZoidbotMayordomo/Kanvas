@@ -210,6 +210,16 @@ kanvas/
 
 Full protocol docs: [RULES.md](RULES.md)
 
+## Factory Extension (experimental)
+
+This fork also includes an early multi-agent software-factory extension under:
+
+- `docs/factory/`
+- `factory-tool.py`
+- `factory/`
+
+The goal is to keep Kanvas as the visual workflow base while adding richer states, Markdown ticket files, and a supervisor/orchestrator layer.
+
 ## License
 
 MIT
