@@ -37,6 +37,13 @@ def update_board_ticket(board: BoardStatus, ticket: TicketCard) -> None:
     raise KeyError(f"Node not found for ticket {ticket.ticket_id}")
 
 
+def find_ticket(board: BoardStatus, ticket_id: str) -> TicketCard:
+    for ticket in board.tickets:
+        if ticket.ticket_id == ticket_id:
+            return ticket
+    raise KeyError(f"Ticket not found: {ticket_id}")
+
+
 def save_canvas(board: BoardStatus) -> None:
     if not board.payload:
         raise ValueError("Board payload is not loaded")

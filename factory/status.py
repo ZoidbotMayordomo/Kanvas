@@ -2,18 +2,10 @@ from __future__ import annotations
 
 from typing import Dict, List
 
-from .dispatch import find_actionable
+from .dispatch import dependencies_met, detect_inconsistencies, find_actionable, running_or_stale
 from .models import BoardStatus, TicketCard
 from .parser import count_by_state
 from .rules import ACTIVE_EXECUTION_STATES, BLOCKING_STATES, TERMINAL_STATES
-
-
-def dependencies_met(ticket: TicketCard, tickets_by_id: Dict[str, TicketCard]) -> bool:
-    for dep in ticket.depends_on:
-        dep_ticket = tickets_by_id.get(dep)
-        if not dep_ticket or dep_ticket.functional_state != "Done":
-            return False
-    return True
 
 
 def summarize_board(board: BoardStatus) -> dict:
@@ -25,6 +17,17 @@ def summarize_board(board: BoardStatus) -> dict:
 
     for ticket in sorted(board.tickets, key=lambda t: t.ticket_id):
         if ticket.functional_state in TERMINAL_STATES:
+            continue
+        issues = detect_inconsistencies(ticket)
+        if issues:
+            waiting.append(
+                {
+                    "ticket_id": ticket.ticket_id,
+                    "reason": "; ".join(issues),
+                    "state": ticket.functional_state,
+                    "role": ticket.current_role,
+                }
+            )
             continue
         if ticket.execution_state in ACTIVE_EXECUTION_STATES:
             waiting.append(
@@ -75,4 +78,5 @@ def summarize_board(board: BoardStatus) -> dict:
         "anomalies": board.anomalies,
         "actionable": [decision.__dict__ for decision in actionable],
         "waiting": waiting,
+        "running_or_stale": running_or_stale(board),
     }

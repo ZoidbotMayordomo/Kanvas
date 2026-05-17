@@ -212,13 +212,18 @@ Full protocol docs: [RULES.md](RULES.md)
 
 ## Factory Extension (experimental)
 
-This fork also includes an early multi-agent software-factory extension under:
+This fork also includes a usable MVP multi-agent software-factory extension under:
 
 - `docs/factory/`
 - `factory-tool.py`
 - `factory/`
 
-The goal is to keep Kanvas as the visual workflow base while adding richer states, Markdown ticket files, and a supervisor/orchestrator layer.
+The MVP keeps Kanvas as the visual workflow base while adding richer states, Markdown ticket files, a validated state machine, structured agent output handling, and a Codex-first semi-auto supervisor flow.
+
+Start here:
+- `docs/factory/README.md`
+- `docs/factory/workflow.md`
+- `docs/factory/source-of-truth.md`
 
 ## License
 

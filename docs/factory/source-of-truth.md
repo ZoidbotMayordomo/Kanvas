@@ -1,32 +1,34 @@
 # Source of Truth Policy
 
-## Decisión adoptada
-Modelo híbrido por campos:
-- **Canvas manda** en el estado visible y operativo.
-- **Markdown manda** en el detalle explicativo y la trazabilidad larga.
+## Adopted decision
+Hybrid model by field:
+- **Canvas is authoritative** for visible and operational state.
+- **Markdown is authoritative** for narrative detail and long-form traceability.
 
-## Campos autoritativos del Canvas
-- título del ticket
-- estado funcional
-- estado de ejecución
-- rol actual
-- prioridad
-- doc asociado
-- dependencias
-- bloqueo
+## Canvas-authoritative fields
+- ticket title
+- functional state
+- execution state
+- current role
+- priority
+- linked doc path
+- dependencies
+- blocking reason
 
-Estos campos se sincronizan hacia `tickets/*.md` con `sync --write`.
+These fields sync into `tickets/*.md` via `factory sync --write` and also during dispatch/apply-output.
 
-## Campos autoritativos del Markdown
-- descripción
-- criterios de aceptación
-- contexto
-- decisiones
-- implementación
-- QA / security
-- historial narrativo
-- siguiente paso esperado
+## Markdown-authoritative sections
+- Description
+- Acceptance Criteria
+- Dependencies narrative
+- Relevant Context
+- Decisions
+- Implementation
+- QA / Security
+- Transition History
+- Next Expected Step
 
-## Implicación operativa
-- `dispatch` puede reclamar tickets cambiando `Execution` a `running` en el canvas y sincronizando ese cambio al markdown.
-- `sync --write` corrige en markdown los campos gobernados por canvas, sin tocar el contenido narrativo.
+## Operational implications
+- `dispatch` may claim tickets by switching execution state to `running` in canvas and mirroring that change into markdown.
+- `sync --write` corrects canvas-governed metadata in markdown without overwriting narrative sections.
+- `apply-output` consumes validated structured agent output, updates the authoritative canvas fields, and appends minimal markdown traceability.

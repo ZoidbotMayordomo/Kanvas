@@ -3,42 +3,36 @@
 ## Metadata
 - Estado: Backlog
 - Execution state: idle
-- Rol actual:
-- Prioridad:
-- Agente activo:
-- Último run:
+- Rol actual: Human
+- Prioridad: Medium
+- Agente activo: 
+- Último run: 
 - Doc canvas: Factory.canvas
+- Automation mode: semi-auto
 
-## Descripción
-
-## Criterios de aceptación
+## Description
 - 
 
-## Dependencias
+## Acceptance Criteria
 - 
 
-## Contexto relevante
+## Dependencies
 - 
 
-## Decisiones
+## Relevant Context
 - 
 
-## Implementación
-### Artefactos
+## Decisions
 - 
 
-### Commits / PRs
+## Implementation
 - 
 
 ## QA / Security
-### Resultado
 - 
 
-### Bugs / Hallazgos
+## Transition History
 - 
 
-## Historial de transiciones
-- 
-
-## Próximo paso esperado
+## Next Expected Step
 - 

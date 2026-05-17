@@ -5,6 +5,15 @@ from typing import Dict, List
 from .markdown import parse_ticket_markdown, sync_ticket_markdown
 from .models import BoardStatus
 
+CANVAS_TO_MARKDOWN_FIELDS = {
+    "ticket_id": "ticket_id",
+    "title": "title",
+    "functional_state": "Estado",
+    "execution_state": "Execution state",
+    "current_role": "Rol actual",
+    "priority": "Prioridad",
+}
+
 
 def inspect_sync(board: BoardStatus) -> dict:
     checked = 0
@@ -19,66 +28,26 @@ def inspect_sync(board: BoardStatus) -> dict:
 
         checked += 1
         doc = parse_ticket_markdown(doc_path)
-        if doc.get("ticket_id") and doc.get("ticket_id") != ticket.ticket_id:
-            mismatches.append(
-                {
-                    "ticket_id": ticket.ticket_id,
-                    "field": "ticket_id",
-                    "authority": "canvas",
-                    "canvas": ticket.ticket_id,
-                    "markdown": doc.get("ticket_id", ""),
-                }
-            )
-        if doc.get("title") and doc.get("title") != ticket.title:
-            mismatches.append(
-                {
-                    "ticket_id": ticket.ticket_id,
-                    "field": "title",
-                    "authority": "canvas",
-                    "canvas": ticket.title,
-                    "markdown": doc.get("title", ""),
-                }
-            )
-        if doc.get("Estado") and doc.get("Estado") != ticket.functional_state:
-            mismatches.append(
-                {
-                    "ticket_id": ticket.ticket_id,
-                    "field": "Estado",
-                    "authority": "canvas",
-                    "canvas": ticket.functional_state,
-                    "markdown": doc.get("Estado", ""),
-                }
-            )
-        if doc.get("Execution state") and doc.get("Execution state") != ticket.execution_state:
-            mismatches.append(
-                {
-                    "ticket_id": ticket.ticket_id,
-                    "field": "Execution state",
-                    "authority": "canvas",
-                    "canvas": ticket.execution_state,
-                    "markdown": doc.get("Execution state", ""),
-                }
-            )
-        if doc.get("Rol actual") and doc.get("Rol actual") != ticket.current_role:
-            mismatches.append(
-                {
-                    "ticket_id": ticket.ticket_id,
-                    "field": "Rol actual",
-                    "authority": "canvas",
-                    "canvas": ticket.current_role,
-                    "markdown": doc.get("Rol actual", ""),
-                }
-            )
-        if doc.get("Prioridad") and doc.get("Prioridad") != ticket.priority:
-            mismatches.append(
-                {
-                    "ticket_id": ticket.ticket_id,
-                    "field": "Prioridad",
-                    "authority": "canvas",
-                    "canvas": ticket.priority,
-                    "markdown": doc.get("Prioridad", ""),
-                }
-            )
+        expected = {
+            "ticket_id": ticket.ticket_id,
+            "title": ticket.title,
+            "Estado": ticket.functional_state,
+            "Execution state": ticket.execution_state,
+            "Rol actual": ticket.current_role,
+            "Prioridad": ticket.priority,
+        }
+        for field, expected_value in expected.items():
+            actual = doc.get(field)
+            if actual and actual != expected_value:
+                mismatches.append(
+                    {
+                        "ticket_id": ticket.ticket_id,
+                        "field": field,
+                        "authority": "canvas",
+                        "canvas": expected_value,
+                        "markdown": actual,
+                    }
+                )
 
     return {
         "checked_docs": checked,
@@ -87,15 +56,14 @@ def inspect_sync(board: BoardStatus) -> dict:
     }
 
 
-def write_sync(board: BoardStatus) -> dict:
+def write_sync(board: BoardStatus, automation_mode: str = "semi-auto") -> dict:
     changed: List[str] = []
     missing_docs: List[str] = []
     for ticket in board.tickets:
         doc_path = (board.canvas_path.parent / ticket.doc_path).resolve()
         if not doc_path.exists():
             missing_docs.append(ticket.ticket_id)
-            continue
-        if sync_ticket_markdown(ticket, board):
+        if sync_ticket_markdown(ticket, board, automation_mode=automation_mode):
             changed.append(ticket.ticket_id)
 
     return {

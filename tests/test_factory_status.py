@@ -40,7 +40,7 @@ class FactoryStatusTest(unittest.TestCase):
 
             doc = tmp_root / "factory-tickets" / "SF-01.md"
             doc.write_text(
-                "# SF-01 - Título viejo\n\n## Metadata\n- Estado: Backlog\n- Execution state: failed\n- Rol actual: Nadie\n- Prioridad: Baja\n\n## Descripción\nNo tocar esta sección.\n",
+                "# SF-01 - Título viejo\n\n## Metadata\n- Estado: Backlog\n- Execution state: failed\n- Rol actual: Nadie\n- Prioridad: Baja\n\n## Description\nDo not touch this section.\n",
                 encoding="utf-8",
             )
 
@@ -54,7 +54,7 @@ class FactoryStatusTest(unittest.TestCase):
             self.assertEqual(updated["Estado"], "Ready for refinement")
             self.assertEqual(updated["Execution state"], "idle")
             self.assertEqual(updated["Rol actual"], "Product Owner")
-            self.assertIn("No tocar esta sección.", content)
+            self.assertIn("Do not touch this section.", content)
 
     def test_dispatch_claim_marks_ticket_running_and_syncs_markdown(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
@@ -69,7 +69,8 @@ class FactoryStatusTest(unittest.TestCase):
 
             self.assertEqual(result["claimed_count"], 1)
             self.assertEqual(result["claimed"][0]["ticket_id"], "SF-01")
-            self.assertEqual(reloaded.tickets[0].execution_state, "running")
+            sf01 = next(ticket for ticket in reloaded.tickets if ticket.ticket_id == "SF-01")
+            self.assertEqual(sf01.execution_state, "running")
             self.assertEqual(updated["Execution state"], "running")
 
 

@@ -29,6 +29,24 @@ class DispatchDecision:
 
 
 @dataclass
+class AgentOutput:
+    ticket_id: str
+    engine: str
+    automation_mode: str
+    from_state: str
+    to_state: str
+    summary: str
+    next_step: str = ""
+    implementation_notes: str = ""
+    qa_notes: str = ""
+    decisions: List[str] = field(default_factory=list)
+    artifacts: List[str] = field(default_factory=list)
+    blockers: List[str] = field(default_factory=list)
+    transition_history: List[str] = field(default_factory=list)
+    raw_payload: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
 class BoardStatus:
     canvas_path: Path
     tickets: List[TicketCard] = field(default_factory=list)

@@ -52,13 +52,57 @@ CANVAS_AUTHORITY_FIELDS = {
 }
 
 MARKDOWN_AUTHORITY_SECTIONS = {
-    "Descripción",
-    "Criterios de aceptación",
-    "Dependencias",
-    "Contexto relevante",
-    "Decisiones",
-    "Implementación",
+    "Description",
+    "Acceptance Criteria",
+    "Dependencies",
+    "Relevant Context",
+    "Decisions",
+    "Implementation",
     "QA / Security",
-    "Historial de transiciones",
-    "Próximo paso esperado",
+    "Transition History",
+    "Next Expected Step",
+}
+
+DEFAULT_MARKDOWN_SECTIONS = [
+    "Description",
+    "Acceptance Criteria",
+    "Dependencies",
+    "Relevant Context",
+    "Decisions",
+    "Implementation",
+    "QA / Security",
+    "Transition History",
+    "Next Expected Step",
+]
+
+LEGAL_TRANSITIONS = {
+    "Backlog": {"Ready for refinement", "Blocked"},
+    "Ready for refinement": {"Ready for architecture review", "Ready for implementation", "Blocked", "Backlog"},
+    "Ready for architecture review": {"Ready for implementation", "Ready for refinement", "Blocked"},
+    "Ready for implementation": {"Ready for QA", "Ready for architecture review", "Ready for refinement", "Blocked"},
+    "Ready for QA": {"Ready for PO review", "Ready for implementation", "Blocked"},
+    "Ready for PO review": {"Done", "Ready for implementation", "Ready for refinement", "Blocked"},
+    "Ready for human review": {"Done", "Ready for implementation", "Ready for refinement", "Blocked"},
+    "Blocked": {
+        "Backlog",
+        "Ready for refinement",
+        "Ready for architecture review",
+        "Ready for implementation",
+        "Ready for QA",
+        "Ready for PO review",
+        "Ready for human review",
+    },
+    "Done": {"Ready for implementation", "Ready for QA", "Ready for PO review", "Ready for human review", "Blocked"},
+}
+
+TRANSITION_NOTES = {
+    "Backlog": "Planned but not yet routed to an agent workflow.",
+    "Ready for refinement": "Needs product framing or clarification.",
+    "Ready for architecture review": "Needs technical design review before implementation.",
+    "Ready for implementation": "Ready for an implementation agent to execute.",
+    "Ready for QA": "Implementation is complete; needs verification.",
+    "Ready for PO review": "QA passed; awaiting product acceptance.",
+    "Ready for human review": "Needs explicit human validation before completion.",
+    "Done": "Accepted and complete.",
+    "Blocked": "Cannot move forward until blocker is resolved.",
 }

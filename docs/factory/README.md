@@ -1,51 +1,53 @@
 # Factory Extension for Kanvas
 
-## Objetivo
-Extender Kanvas para soportar una software factory multiagente, manteniendo el proyecto:
-- agnóstico al motor
+## Goal
+Extend Kanvas to support a Kanvas-based multi-agent software factory while staying:
+- agent-agnostic
 - git-friendly
-- centrado en Obsidian + Markdown
-- gobernado por estados y contratos
+- file-based only (`.canvas` + `.md`)
+- English-first in code and docs
 
-## Decisión de diseño
-Kanvas seguirá siendo la base visual y de workflow. La capa factory añadirá:
-- estados funcionales más ricos
-- contratos de rol
-- tickets Markdown por ID
-- supervisor/orchestrator
-- sincronización canvas <-> markdown
+## Design choice
+Kanvas stays the visual workflow base. The factory layer adds:
+- richer functional states
+- role routing
+- Markdown ticket files by ID
+- structured agent output contract
+- supervisor/orchestrator commands
+- canvas <-> markdown synchronization
+- a first semi-auto Codex adapter
 
-## Principios
-- **No backend oculto**: la fuente de verdad vive en archivos del repo.
-- **Canvas para visión global**.
-- **Markdown para detalle y trazabilidad**.
-- **El supervisor valida transiciones; los agentes proponen**.
-- **No acoplarse a Claude/Codex/Gemini**.
+## Principles
+- **No hidden backend**: source of truth stays in repo files.
+- **Canvas for global operational state**.
+- **Markdown for detail and traceability**.
+- **The supervisor validates transitions; agents propose outputs**.
+- **Do not lock architecture to Codex even if Codex is the first adapter**.
 
-## MVP
-1. Parsear tarjetas canónicas de canvas
-2. Parsear tickets Markdown
-3. Resolver routing por estado
-4. Exponer `factory status`
-5. Exponer `factory dispatch --dry-run`
-6. Exponer `factory sync`
-
-## Estado actual
-Ya existe una primera versión de:
-- parser de tarjetas canónicas en `.canvas`
-- resumen de estado del board
-- detección básica de anomalías
-- ejemplo funcional en `examples/factory-sample.canvas`
-
-## Probarlo
+## MVP commands
 ```bash
 python3 factory-tool.py examples/factory-sample.canvas status
 python3 factory-tool.py examples/factory-sample.canvas dispatch --dry-run
-python3 factory-tool.py examples/factory-sample.canvas dispatch
+python3 factory-tool.py examples/factory-sample.canvas dispatch --automation-mode semi-auto
 python3 factory-tool.py examples/factory-sample.canvas sync
 python3 factory-tool.py examples/factory-sample.canvas sync --write
+python3 factory-tool.py examples/factory-sample.canvas codex-prepare SF-01 /tmp/sf01-task.json
+python3 factory-tool.py examples/factory-sample.canvas validate-output /tmp/agent-output.json
+python3 factory-tool.py examples/factory-sample.canvas apply-output /tmp/agent-output.json
 python3 -m unittest discover -s tests
 ```
 
-## Política de fuente de verdad
-Ver `docs/factory/source-of-truth.md`.
+## Current MVP coverage
+- canonical `.canvas` ticket parsing
+- state-machine validation with rollback / rework paths
+- dispatch with priority, max claims, inconsistent-ticket rejection, and running/stale surfacing
+- sync that fully mirrors canvas-authoritative metadata into markdown while preserving narrative sections
+- structured agent output contract parsing + validation
+- `apply-output` to validate and apply agent results back into repo files
+- Codex-first semi-auto task payload generation
+- unit/integration tests and sample end-to-end flow
+
+## Key docs
+- `docs/factory/workflow.md`
+- `docs/factory/source-of-truth.md`
+- `docs/factory/ticket-template.md`
