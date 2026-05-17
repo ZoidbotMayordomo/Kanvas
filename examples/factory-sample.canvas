@@ -1,0 +1,58 @@
+{
+  "nodes": [
+    {
+      "id": "legend",
+      "type": "text",
+      "text": "## Legend\nFactory sample board",
+      "x": -820,
+      "y": -260,
+      "width": 320,
+      "height": 140,
+      "color": "0"
+    },
+    {
+      "id": "sf-01-node",
+      "type": "text",
+      "text": "## SF-01 Definir workflow canónico\nEstado: Ready for refinement\nExecution: idle\nRol actual: Product Owner\nPrioridad: Alta\nDoc: factory-tickets/SF-01.md\nDepends on:\nBloqueo:",
+      "x": -240,
+      "y": -40,
+      "width": 300,
+      "height": 220,
+      "color": "1"
+    },
+    {
+      "id": "sf-02-node",
+      "type": "text",
+      "text": "## SF-02 Diseñar plantilla de ticket\nEstado: Ready for implementation\nExecution: idle\nRol actual: Implementation Engineer\nPrioridad: Alta\nDoc: factory-tickets/SF-02.md\nDepends on: SF-01\nBloqueo:",
+      "x": 120,
+      "y": -40,
+      "width": 320,
+      "height": 220,
+      "color": "1"
+    },
+    {
+      "id": "sf-03-node",
+      "type": "text",
+      "text": "## SF-03 Diseñar supervisor MVP\nEstado: Blocked\nExecution: waiting_human\nRol actual: Architect\nPrioridad: Media\nDoc: factory-tickets/SF-03.md\nDepends on: SF-02\nBloqueo: Falta decidir el formato final de salida",
+      "x": 500,
+      "y": -40,
+      "width": 320,
+      "height": 240,
+      "color": "0"
+    },
+    {
+      "id": "sf-04-node",
+      "type": "text",
+      "text": "## SF-04 Validar pruebas básicas\nEstado: Done\nExecution: idle\nRol actual: Quality + Security Gate\nPrioridad: Baja\nDoc: factory-tickets/SF-04.md\nDepends on:\nBloqueo:",
+      "x": 120,
+      "y": 260,
+      "width": 320,
+      "height": 220,
+      "color": "4"
+    }
+  ],
+  "edges": [
+    {"id": "edge-1", "fromNode": "sf-01-node", "fromSide": "right", "toNode": "sf-02-node", "toSide": "left"},
+    {"id": "edge-2", "fromNode": "sf-02-node", "fromSide": "right", "toNode": "sf-03-node", "toSide": "left"}
+  ]
+}

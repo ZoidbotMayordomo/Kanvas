@@ -29,3 +29,17 @@ Kanvas seguirá siendo la base visual y de workflow. La capa factory añadirá:
 4. Exponer `factory status`
 5. Exponer `factory dispatch --dry-run`
 6. Exponer `factory sync`
+
+## Estado actual
+Ya existe una primera versión de:
+- parser de tarjetas canónicas en `.canvas`
+- resumen de estado del board
+- detección básica de anomalías
+- ejemplo funcional en `examples/factory-sample.canvas`
+
+## Probarlo
+```bash
+python3 factory-tool.py examples/factory-sample.canvas status
+python3 factory-tool.py examples/factory-sample.canvas dispatch --dry-run
+python3 -m unittest discover -s tests
+```

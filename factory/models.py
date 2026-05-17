@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import List, Optional
 
 
@@ -15,6 +16,8 @@ class TicketCard:
     doc_path: str
     depends_on: List[str] = field(default_factory=list)
     blocked_reason: Optional[str] = None
+    node_id: str = ""
+    color: str = ""
 
 
 @dataclass
@@ -23,3 +26,10 @@ class DispatchDecision:
     functional_state: str
     role: str
     reason: str
+
+
+@dataclass
+class BoardStatus:
+    canvas_path: Path
+    tickets: List[TicketCard] = field(default_factory=list)
+    anomalies: List[str] = field(default_factory=list)

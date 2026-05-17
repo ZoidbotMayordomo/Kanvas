@@ -4,35 +4,51 @@ import argparse
 import json
 from pathlib import Path
 
+from .parser import CanvasParseError, parse_board
 from .rules import STATE_TO_ROLE
+from .status import summarize_board
+from .sync import inspect_sync
 
 
 def cmd_status(args: argparse.Namespace) -> int:
-    canvas = Path(args.canvas)
-    payload = {
-        "canvas": str(canvas),
-        "message": "Factory status scaffold ready.",
-        "next": ["Implement canvas parser", "Implement ticket markdown parser"],
-    }
+    try:
+        board = parse_board(Path(args.canvas))
+    except CanvasParseError as exc:
+        print(json.dumps({"error": str(exc)}, ensure_ascii=False, indent=2))
+        return 1
+
+    payload = summarize_board(board)
     print(json.dumps(payload, ensure_ascii=False, indent=2))
     return 0
 
 
 def cmd_dispatch(args: argparse.Namespace) -> int:
-    payload = {
-        "canvas": args.canvas,
-        "dry_run": args.dry_run,
-        "routing_table": STATE_TO_ROLE,
-        "message": "Factory dispatch scaffold ready.",
-    }
+    try:
+        board = parse_board(Path(args.canvas))
+    except CanvasParseError as exc:
+        print(json.dumps({"error": str(exc)}, ensure_ascii=False, indent=2))
+        return 1
+
+    payload = summarize_board(board)
+    payload["dry_run"] = args.dry_run
+    payload["routing_table"] = STATE_TO_ROLE
     print(json.dumps(payload, ensure_ascii=False, indent=2))
     return 0
 
 
 def cmd_sync(args: argparse.Namespace) -> int:
+    try:
+        board = parse_board(Path(args.canvas))
+    except CanvasParseError as exc:
+        print(json.dumps({"error": str(exc)}, ensure_ascii=False, indent=2))
+        return 1
+
     payload = {
         "canvas": args.canvas,
-        "message": "Factory sync scaffold ready.",
+        "ticket_count": len(board.tickets),
+        "anomalies": board.anomalies,
+        "sync": inspect_sync(board),
+        "message": "Factory sync inspection complete.",
     }
     print(json.dumps(payload, ensure_ascii=False, indent=2))
     return 0
