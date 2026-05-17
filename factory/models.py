@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 
 @dataclass
@@ -33,3 +33,4 @@ class BoardStatus:
     canvas_path: Path
     tickets: List[TicketCard] = field(default_factory=list)
     anomalies: List[str] = field(default_factory=list)
+    payload: Dict[str, Any] = field(default_factory=dict)

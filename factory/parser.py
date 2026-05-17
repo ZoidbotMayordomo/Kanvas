@@ -109,7 +109,7 @@ def parse_board(canvas_path: Path) -> BoardStatus:
             if not doc_full_path.exists():
                 anomalies.append(f"{ticket.ticket_id}: doc file not found '{ticket.doc_path}'")
 
-    return BoardStatus(canvas_path=canvas_path, tickets=tickets, anomalies=sorted(set(anomalies)))
+    return BoardStatus(canvas_path=canvas_path, tickets=tickets, anomalies=sorted(set(anomalies)), payload=payload)
 
 
 def count_by_state(tickets: Iterable[TicketCard]) -> Dict[str, int]:

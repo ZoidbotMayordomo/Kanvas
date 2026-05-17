@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from typing import Dict, List
 
-from .models import BoardStatus, DispatchDecision, TicketCard
+from .dispatch import find_actionable
+from .models import BoardStatus, TicketCard
 from .parser import count_by_state
-from .rules import ACTIVE_EXECUTION_STATES, BLOCKING_STATES, STATE_TO_ROLE, TERMINAL_STATES
+from .rules import ACTIVE_EXECUTION_STATES, BLOCKING_STATES, TERMINAL_STATES
 
 
 def dependencies_met(ticket: TicketCard, tickets_by_id: Dict[str, TicketCard]) -> bool:
@@ -17,8 +18,10 @@ def dependencies_met(ticket: TicketCard, tickets_by_id: Dict[str, TicketCard]) -
 
 def summarize_board(board: BoardStatus) -> dict:
     tickets_by_id = {ticket.ticket_id: ticket for ticket in board.tickets}
-    actionable: List[DispatchDecision] = []
+    actionable = find_actionable(board)
     waiting: List[dict] = []
+
+    actionable_ids = {decision.ticket_id for decision in actionable}
 
     for ticket in sorted(board.tickets, key=lambda t: t.ticket_id):
         if ticket.functional_state in TERMINAL_STATES:
@@ -54,25 +57,16 @@ def summarize_board(board: BoardStatus) -> dict:
             )
             continue
 
-        role = STATE_TO_ROLE.get(ticket.functional_state)
-        if role and role != "Human":
-            actionable.append(
-                DispatchDecision(
-                    ticket_id=ticket.ticket_id,
-                    functional_state=ticket.functional_state,
-                    role=role,
-                    reason="state is actionable and dependencies are satisfied",
-                )
-            )
-        else:
-            waiting.append(
-                {
-                    "ticket_id": ticket.ticket_id,
-                    "reason": "awaiting human or no routing rule",
-                    "state": ticket.functional_state,
-                    "role": ticket.current_role,
-                }
-            )
+        if ticket.ticket_id in actionable_ids:
+            continue
+        waiting.append(
+            {
+                "ticket_id": ticket.ticket_id,
+                "reason": "awaiting human or no routing rule",
+                "state": ticket.functional_state,
+                "role": ticket.current_role,
+            }
+        )
 
     return {
         "canvas": str(board.canvas_path),

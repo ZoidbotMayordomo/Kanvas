@@ -41,5 +41,11 @@ Ya existe una primera versión de:
 ```bash
 python3 factory-tool.py examples/factory-sample.canvas status
 python3 factory-tool.py examples/factory-sample.canvas dispatch --dry-run
+python3 factory-tool.py examples/factory-sample.canvas dispatch
+python3 factory-tool.py examples/factory-sample.canvas sync
+python3 factory-tool.py examples/factory-sample.canvas sync --write
 python3 -m unittest discover -s tests
 ```
+
+## Política de fuente de verdad
+Ver `docs/factory/source-of-truth.md`.
