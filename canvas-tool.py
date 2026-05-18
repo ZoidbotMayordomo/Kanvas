@@ -501,11 +501,13 @@ def group_prefix(canvas, group):
     # Derive from group label
     label = group.get("label", "X")
     words = label.split()
-    # Try initials
+    # Try initials (letters only)
     if len(words) >= 2:
-        prefix = "".join(w[0].upper() for w in words[:3])
+        prefix = "".join(w[0].upper() for w in words[:3] if w and w[0].isalpha())
+        if not prefix:  # fallback if no letters found
+            prefix = "".join(c.upper() for c in label if c.isalpha())[:3]
     else:
-        prefix = label[:2].upper()
+        prefix = "".join(c.upper() for c in label if c.isalpha())[:2]
 
     # Make sure it's unambiguous (not used by another group)
     all_prefixes = set()
@@ -518,7 +520,7 @@ def group_prefix(canvas, group):
     # If collision, extend
     if prefix in all_prefixes:
         for length in range(2, len(label) + 1):
-            candidate = label[:length].upper().replace(" ", "")[:3]
+            candidate = "".join(c.upper() for c in label[:length] if c.isalpha())[:3]
             if candidate not in all_prefixes:
                 prefix = candidate
                 break
